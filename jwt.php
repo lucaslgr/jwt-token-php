@@ -1,17 +1,23 @@
 <?php
     class JWT
     {
-        /**
-         * Criando um JWT com criptografia HS256 
-        */
-        public function create(array $data, string $secret_key)
+        //Chave secreta do jwt_token para usar na criptografia
+        private string $secret_key;
+
+        public function __construct(string $secret_key)
+        {
+            $this->secret_key = $secret_key;
+        }
+
+        //Criando um JWT com criptografia HS256 
+        public function create(array $data_payload): string
         {
             $header = json_encode(array(
                 "type" => "JWT",
                 "alg" => "HS256"
             ));
 
-            $payload = json_encode($data);
+            $payload = json_encode($data_payload);
 
             //HASH do header
             $base_header = $this->base64url_encode($header);
@@ -21,13 +27,38 @@
             /**
              * O ultimo parametro como true é para ele manter letras maiúsculas e minusculas
             */
-            $signature = hash_hmac("sha256",$base_header.'.'.$base_payload, $secret_key, true);
+            $signature = hash_hmac("sha256",$base_header.'.'.$base_payload, $this->secret_key, true);
             $base_signature = $this->base64url_encode($signature);
 
             //Montando o JWT
             $jwt = $base_header.'.'.$base_payload.'.'.$base_signature;
 
             return $jwt;
+        }
+
+        public function validate(string $token)
+        {
+            // Passo 1: Verificar se o TOKEN tem 3 partes: HEADER, PAYLOAD e SIGNATURE
+            // Passo 2: Bater a assinatura com os dados
+            
+            $response = array();
+
+            $jwt_split = explode('.', $token);
+            //Conferindo passo 1
+            if (count($jwt_split) == 3) {
+                //Gerando a assinatura com as informações do HEADER($jwt_split[0]) e do PAYLOAD($jwt_split[1]) do token
+                $signature = hash_hmac("sha256", $jwt_split[0].'.'.$jwt_split[1], $this->secret_key, true);
+                
+                $base_signature = $this->base64url_encode($signature);
+                //Conferindo o passo 2
+                if ($base_signature == $jwt_split[2]) {
+                    
+                    //Recuperando os dados do PAYLOAD com decode
+                    $response = json_decode($this->base64url_decode($jwt_split[1]));
+                    return $response;
+                }
+            } else
+                return false;
         }
 
 
