@@ -16,9 +16,9 @@
         print_r($info);
 
         if ($info)
-            echo 'Token Válido!';
+            echo 'Token válido!';
         else
-            echo 'Token Inválido!';
+            echo 'Token inválido!';
     }
     else
         echo 'Token não enviado';
