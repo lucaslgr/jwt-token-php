@@ -1,4 +1,4 @@
-<a href="./LICENSE">![GitHub](https://img.shields.io/badge/license-PROPRIETARY-blue)</a>
+<a href="./LICENSE">![GitHub](https://img.shields.io/badge/license-MIT-green)</a>
 
 # Classe para criação e validação de um JWT token com PHP 
 
@@ -78,5 +78,7 @@
 ## :man_technologist: Autoria
 
 Lucas Guimarães
+
+https://www.linkedin.com/in/lucas-guimar%C3%A3es-rocha-a30282132/
 
 https://lucaslgr.github.io/
