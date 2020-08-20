@@ -12,21 +12,26 @@
         //Criando um JWT com criptografia HS256 
         public function create(array $data_payload): string
         {
+            //Passo 1: urlEncode no JSON do header
+            //Passo 2: urlEncode no JSON do payload
+            //Passo 3: Gerar a signature criptografada utilizando a chave secreta setada
+            //Passo 4: urlEncode na signature
+            //Passo 5: Junta as 3 partes => header.payload.signature
+
+            //Definindo o header
             $header = json_encode(array(
                 "type" => "JWT",
                 "alg" => "HS256"
             ));
 
             $payload = json_encode($data_payload);
-
-            //HASH do header
+        
+            //HASH do header e do Payload
             $base_header = $this->base64url_encode($header);
             $base_payload = $this->base64url_encode($payload);
 
-            //Tipo da criptografia alg->HS256->sha256
-            /**
-             * O ultimo parametro como true é para ele manter letras maiúsculas e minusculas
-            */
+           //Tipo da criptografia alg->HS256->sha256
+            //OBS: O ultimo parametro como true é para ele manter letras maiúsculas e minusculas
             $signature = hash_hmac("sha256",$base_header.'.'.$base_payload, $this->secret_key, true);
             $base_signature = $this->base64url_encode($signature);
 
